@@ -1,4 +1,14 @@
-!ImageTorchEncoder
+!ImageKerasEncoder
 with:
-  pool_strategy: mean
-  model_name: mobilenet_v2
+  model_name: MobileNetV2
+  pool_strategy: avg
+  # channel_axis: -1
+requests:
+  on:
+    ControlRequest:
+      - !ControlReqDriver {}
+    [IndexRequest, SearchRequest]:
+      - !EncodeDriver
+        with:
+          granularity_range: [1, 1]
+          recur_on: ['chunks', ]
