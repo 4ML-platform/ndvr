@@ -7,6 +7,7 @@ pods:
     uses: craft/craft.yml
     parallel: $PARALLEL
     read_only: true
+    timeout_ready: 600000
   tf_encode:
     uses: encode/encode.yml
     needs: chunk_seg

@@ -131,3 +131,8 @@ shell/jina-wizard.sh
 jina-profile*.json
 
 .vscode/
+
+*.gz
+*.bin
+*.gzip
+*.mp4

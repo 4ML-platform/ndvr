@@ -9,11 +9,11 @@ requests:
     IndexRequest:
       - !SegmentDriver
         with:
-          executor: gif2chunk_preprocessor
+          executor: video2chunk_preprocessor
     SearchRequest:
       - !URI2Buffer {}
       - !SegmentDriver
         with:
-          executor: gif2chunk_preprocessor
+          executor: video2chunk_preprocessor
     ControRequest:
       - !ControlReqDriver {}

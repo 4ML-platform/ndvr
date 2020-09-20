@@ -9,14 +9,14 @@ class VideoPreprocessor(BaseSegmenter):
         super().__init__(*args, **kwargs)
         self.num_keyframes = num_keyframes
 
-    def craft(self, video_path, doc_id):
+    def craft(self, buffer, id):
         result = []
         try:
             idx = 0
-            for frame in get_keyframes_from_video(video_path, self.num_keyframes):
+            for frame in get_keyframes_from_video(buffer, self.num_keyframes):
                 try:
                     img = (np.array(frame) / 255).astype(np.float32)
-                    result.append(dict(doc_id=doc_id, offset=idx,
+                    result.append(dict(id=id, offset=idx,
                             weight=1., blob=img))
                 except Exception as ex:
                     self.logger.error(ex)
