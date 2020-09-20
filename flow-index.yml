@@ -1,6 +1,6 @@
 !Flow
 with:
-  prefetch: 2
+  # prefetch: 2
   logserver: false
 pods:
   chunk_seg:

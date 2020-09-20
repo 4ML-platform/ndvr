@@ -19,7 +19,7 @@ def input_index_data(patterns, size):
     if isinstance(patterns, str):
         patterns = [patterns]
     for g in iter_file_exts(patterns):
-        yield g
+        yield g.encode()
         d += 1
         if size is not None and d > size:
             break
@@ -32,7 +32,6 @@ def config():
     os.environ["JINA_PORT"] = os.environ.get("JINA_PORT", str(45678))
     os.environ["WORKDIR"] = "./workspace"
     os.makedirs(os.environ["WORKDIR"], exist_ok=True)
-    os.environ["JINA_PORT"] = os.environ.get("JINA_PORT", str(45678))
 
 
 @click.command()
@@ -40,7 +39,7 @@ def config():
 @click.option("--num_docs", "-n", default=10)
 def main(task, num_docs):
     config()
-    DATA_BLOB = "./data/*.mp4"
+    DATA_BLOB = "./index-videos/*.mp4"
     if task == "index":
         f = Flow().load_config("flow-index.yml")
         with f:

@@ -11,6 +11,7 @@ class VideoPreprocessor(BaseSegmenter):
 
     def craft(self, buffer, id):
         result = []
+        buffer = buffer.decode()
         try:
             idx = 0
             for frame in get_keyframes_from_video(buffer, self.num_keyframes):

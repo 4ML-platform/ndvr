@@ -15,6 +15,7 @@ Here, we have built a Neural Search solution using Jina to solve the challenge o
 - [Near Duplicate Video Retrieval](#near-duplicate-video-retrieval)
   - [How does it look like?](#how-does-it-look-like)
   - [Challenges](#challenges)
+  - [Data](#data)
   - [Prerequirements](#prerequirements)
     - [Download the data](#download-the-data)
   - [Run Index Flow](#run-index-flow)
@@ -36,6 +37,25 @@ Botton row: rotated
 Example of hard negative videos. All the candidates are
 visually similar to the query but not near-duplicates.
 
+## Data
+
+There are three strategies for selecting candidate videos:
+1. Iterative Retrieval
+2. Transformed Retrieval
+3. Feature Based Mining
+
+We decided to go with Transformed Retrieval strategy due to the time & resource constraint.
+In real applications, users would copy trending videos for personal incentives. Users usually choose to modify their copied videos slightly to bypass the detection. These modifications contain video cropping, border insertion and so on.
+
+To mimic such user behavior, we define one temporal transformation, i.e., video speeding, and three spatial transformations, i.e., video cropping, black border insertion, and video rotation.
+
+Unfortunately, the NDVR datasets researched upon were either low resoluation or huge or domain specfic or not publicly available(we contacted few personally as well). Hence, we decided to create our small custom dataset to experiment on.
+
+![Datatset](./images/ndvr-1.png)
+
+
+
+
 ## Prerequirements
 
 ```bash
@@ -49,30 +69,33 @@ pip install --upgrade -r requirements.txt
 ## Run Index Flow
 
 ```bash
-python app.py index
+python app.py -t index
 ```
 
 The index Flow is defined as follows:
 ```yaml
 !Flow
 with:
-  logserver: true
+  logserver: false
 pods:
   chunk_seg:
-    uses: craft/index-craft.yml
+    uses: craft/craft.yml
     parallel: $PARALLEL
     read_only: true
-  doc_idx:
-    uses: index/doc.yml
+    timeout_ready: 600000
   tf_encode:
     uses: encode/encode.yml
     needs: chunk_seg
     parallel: $PARALLEL
     read_only: true
+    timeout_ready: 600000
   chunk_idx:
     uses: index/chunk.yml
     shards: $SHARDS
     separated_workspace: true
+  doc_idx:
+    uses: index/doc.yml
+    needs: gateway
   join_all:
     uses: _merge
     needs: [doc_idx, chunk_idx]
@@ -80,15 +103,18 @@ pods:
 ```
 
 This breaks down into the following steps:
-1. Segment each video into chunks;
-2. Encode each chunk as a fixed-length vector;
+1. Segment each video into keyframes (chunks);
+   1. Key-frames are defined as the representative frames of a video stream, the frames that  provide the most accurate and compact summary of the video content.
+   2. It would be an efficient way to encode Videos, as a lot of frames are redundant.
+   3. We did some time analysis on Keyframe extraction. It takes around 17 seconds to extract 15 keyframes of a 5 min(17 Mb) video.
+2. Encode each keyframe (chunk) as a fixed-length vector;
 3. Store all vector representations in a vector database with *shards*.
 
 
 ## Run Query Flow
 
 ```bash
-python app.py search
+python app.py -t query
 ```
 
 You can then open [Jinabox](https://jina.ai/jinabox.js/) with the custom endpoint `http://localhost:45678/api/search`
