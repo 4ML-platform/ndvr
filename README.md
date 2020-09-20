@@ -20,6 +20,8 @@ Here, we have built a Neural Search solution using Jina to solve the challenge o
     - [Download the data](#download-the-data)
   - [Run Index Flow](#run-index-flow)
   - [Run Query Flow](#run-query-flow)
+  - [Further Improvements](#further-improvements)
+  - [Credits](#credits)
 
 ## How does it look like?
 
@@ -182,3 +184,17 @@ The query flow breaks down into the following steps:
 3. Aggregate the chunk-level score back to document-level;
 4. Return the top-k results to users.
 
+
+## Further Improvements
+
+- [ ] Gather more data with multiple mining strategies to mine hard positive/negative samples from massive short videos.
+- [ ] Train [Model](https://github.com/MKLab-ITI/ndvr-dml) on the data & evaluate.
+- [ ] Custom Rankers
+
+
+## Credits
+
+* [Jina - Neural Search Framework](https://jina.ai/#/)
+* [Katna - Keyframe Extraction](https://katna.readthedocs.io/)
+* [Million-scale Near-duplicate Video Retrieval System](http://www.cs.cmu.edu/~caiyang/papers/msndvr-cai-11.pdf)
+* [SVD: A Large-Scale Short Video Dataset for Near-Duplicate Video Retrieval](https://svdbase.github.io/files/ICCV19_SVD.pdf)
