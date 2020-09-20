@@ -25,17 +25,17 @@ Here, we have built a Neural Search solution using Jina to solve the challenge o
 
 ![Example](./images/ndvr-2.png)
 
-Example of hard positive candidate videos.
+<sub>Example of hard positive candidate videos.
 Top row: side morrored, color-filtered, and waterwashed.
 Middle row: horizontal screen changed to vertical screen with large black margins.
-Botton row: rotated
+Botton row: rotated</sub>
 
 ## Challenges
 
 ![Challenge](./images/ndvr-3.png)
 
-Example of hard negative videos. All the candidates are
-visually similar to the query but not near-duplicates.
+<sub>Example of hard negative videos. All the candidates are
+visually similar to the query but not near-duplicates.</sub>
 
 ## Data
 
@@ -64,7 +64,9 @@ pip install --upgrade -r requirements.txt
 
 ### Download the data
 
-
+```bash
+bash ./get_data.sh
+```
 
 ## Run Index Flow
 
@@ -109,6 +111,33 @@ This breaks down into the following steps:
    3. We did some time analysis on Keyframe extraction. It takes around 17 seconds to extract 15 keyframes of a 5 min(17 Mb) video.
 2. Encode each keyframe (chunk) as a fixed-length vector;
 3. Store all vector representations in a vector database with *shards*.
+
+</details>
+
+Here we use a YAML file to define a Flow and use it to index the data. The `index` function takes a `input_fn` param which takes an Iterator to pass file paths, which will be further wrapped in an `IndexRequest` and sent to the Flow.
+
+```python
+DATA_BLOB = "./index-videos/*.mp4"
+if task == "index":
+    f = Flow().load_config("flow-index.yml")
+    with f:
+        f.index(input_fn=input_index_data(DATA_BLOB, size=num_docs), batch_size=2)
+```
+
+```python
+def input_index_data(patterns, size):
+    def iter_file_exts(ps):
+        return it.chain.from_iterable(glob.iglob(p, recursive=True) for p in ps)
+
+    d = 0
+    if isinstance(patterns, str):
+        patterns = [patterns]
+    for g in iter_file_exts(patterns):
+        yield g.encode()
+        d += 1
+        if size is not None and d > size:
+            break
+```
 
 
 ## Run Query Flow
