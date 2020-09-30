@@ -1,5 +1,7 @@
 # Near Duplicate Video Retrieval
 
+2nd Rank for the [Neural Search](https://jinaxhackathon.ai/) Hackathon :2nd_place_medal:
+
 We have witnessed an explosive growth of video data in a variety of video sharing websites with billions of videos being available on the internet,
 it becomes a major challenge to perform near-duplicate video retrieval (NDVR) from a large-scale video database. NDVR aims to retrieve the near-duplicate
 videos from a massive video database, where near-duplicate videos are defined as videos that are visually close to the original videos.
